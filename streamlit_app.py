@@ -8,15 +8,18 @@ def main():
     uploaded_file = st.file_uploader("Carregue um arquivo Excel", type=["xlsx", "xls"])
 
     if uploaded_file:
+        # Ler o arquivo para memória para evitar consumo do stream
+        file_bytes = uploaded_file.read()
+
         # Ler todas as sheets do Excel
-        xls = pd.ExcelFile(uploaded_file)
+        xls = pd.ExcelFile(file_bytes)
         sheets = xls.sheet_names
 
         st.subheader("Selecione o livro (sheet) para converter")
         sheet_selecionada = st.selectbox("Escolha o livro", sheets)
 
         # Carregar a sheet selecionada
-        df = pd.read_excel(uploaded_file, sheet_name=sheet_selecionada)
+        df = pd.read_excel(file_bytes, sheet_name=sheet_selecionada)
         st.subheader("Pré-visualização dos dados")
         st.dataframe(df)
 
